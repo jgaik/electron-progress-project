@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"name": "electron-progress-project",
+			"path": "."
+		}
+	],
+	"settings": {
+		"editor.tabSize": 2,
+		"editor.formatOnSave": true
+	}
+}
