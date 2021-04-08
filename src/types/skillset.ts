@@ -2,7 +2,8 @@ export type SkillsetType = {
   id: number,
   name: string,
   skills: SkillType[],
-  progress: number
+  progress: number,
+  order: OrderEnum
 }
 
 export type SkillType = {
@@ -11,4 +12,10 @@ export type SkillType = {
   media: string,
   isDone: boolean,
   lastDate: Date
+}
+
+export enum OrderEnum {
+  Ordered = "ordered",
+  Unordered = "unordered",
+  Hierarchy = "hierarchy"
 }

@@ -1,8 +1,10 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import skillsets from './skillsets'
+import update from './update'
 
 const rootReducers = combineReducers({
-  skillsets: skillsets
+  skillsets,
+  update
 })
 
 export const store = configureStore({
