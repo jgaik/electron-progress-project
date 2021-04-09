@@ -27,7 +27,7 @@ export const Skillset: React.FC<SkillsetProps> = ({ skillset }) => {
       <Collapse isOpen={showSkills}>
         <CardGroup className="skills">
           {skillset.skills.map((skill) => (
-            <Skill key={skill.id} skill={skill} />
+            <Skill key={skill.id.toString()} skill={skill} />
           ))}
         </CardGroup>
       </Collapse>
