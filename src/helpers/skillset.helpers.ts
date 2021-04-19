@@ -11,6 +11,16 @@ export const createSkillset = ( id?:string, name:string = "", isOrdered:boolean 
   return outSkillset;
 }
 
+export const shiftSkillsetID = (skillset: SkillsetType, shiftValue:number, level?:number) => {
+  if (!level) {
+    level = getLevel(skillset.id);
+  }
+  skillset.id = shiftLevel(skillset.id, shiftValue, level);
+  skillset.skillsets.forEach( value => {
+    shiftSkillsetID(value, shiftValue, level)
+  })
+}
+
 export const removeSkillset = (skillset: SkillsetType, indexString:string) => {
   const parentIndex = extractParent(indexString);
   let parentSkillset:SkillsetType;
@@ -19,17 +29,11 @@ export const removeSkillset = (skillset: SkillsetType, indexString:string) => {
   } else {
     parentSkillset = skillset;
   }
-  const shiftIdRecurrent = (skillsets:SkillsetType[], shiftValue:number, level:number) => {
-    skillsets.forEach(skillset => {
-      skillset.id = shiftLevel(skillset.id, shiftValue, level);
-      if (skillset.skillsets.length > 0) shiftIdRecurrent( skillset.skillsets, shiftValue, level)
-    });
-  }
   const level = getLevel(indexString);
   const indexStart = extractIndex(indexString);
   for (let idx = indexStart + 1; idx < parentSkillset.skillsets.length; idx ++) {
-    parentSkillset.skillsets[idx].id = shiftLevel(parentSkillset.skillsets[idx].id, -1, level)
-    shiftIdRecurrent(parentSkillset.skillsets[idx].skillsets, -1, level)
+    console.log(indexStart);
+    shiftSkillsetID(parentSkillset.skillsets[idx], -1, level)
   }
   parentSkillset.skillsets.splice(indexStart, 1)
 }

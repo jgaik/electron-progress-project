@@ -22,8 +22,8 @@ export const SkillsetList: React.FC<SkillsetListProps> = ({
 }) => {
   const currentId = useAppSelector((state) => state.edit.currentId);
   const skillsets = skillset.skillsets;
-  const elements = (skillsets: SkillsetType[]) =>
-    skillsets.map((skillset) => (
+  const elements = (sets: SkillsetType[]) =>
+    sets.map((skillset) => (
       <li key={skillset.id}>
         <SkillsetListItem id={skillset.id} name={skillset.name} />
         <SkillsetList hasParent={true} skillset={skillset} />

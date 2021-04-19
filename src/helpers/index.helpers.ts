@@ -9,7 +9,7 @@ export const extractIndex = (indexString:string) => {
   if (indexString.indexOf('.') < 0) {
     return parseInt(indexString);
   }
-  return parseInt(indexString.slice(indexString.lastIndexOf('.')) + 1);
+  return parseInt(indexString.slice(indexString.lastIndexOf('.') + 1));
 }
 
 export const createIndexString = (index:number, parentIndex:string|null) => {
