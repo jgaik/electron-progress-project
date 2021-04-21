@@ -1,23 +1,20 @@
 import React, { useState } from "react";
 import { ButtonGroup, Button, Input } from "reactstrap";
 import { useAppDispatch } from "../../hooks";
-import { setCurrentId, updateSkillset, deleteSkillset } from "../../store";
+import { setCurrentId, deleteSkill, updateSkill } from "../../store";
+import { SkillType } from "../../types";
 
-interface SkillsetListItemProps {
-  name: string;
-  id: string;
+interface SkillListItemProps {
+  skill: SkillType;
 }
 
-export const SkillsetListItem: React.FC<SkillsetListItemProps> = ({
-  name,
-  id,
-}) => {
+export const SkillListItem: React.FC<SkillListItemProps> = ({ skill }) => {
   const dispatch = useAppDispatch();
   const [editable, setEditable] = useState<boolean>(false);
-  const [label, setLabel] = useState<string>(name);
+  const [label, setLabel] = useState<string>(skill.name);
 
   const buttonAddHandler = () => {
-    dispatch(setCurrentId(id));
+    dispatch(setCurrentId(skill.id));
   };
 
   const inputEditChangeHandler = (
@@ -28,13 +25,17 @@ export const SkillsetListItem: React.FC<SkillsetListItemProps> = ({
 
   const toggleEditable = () => {
     if (editable) {
-      dispatch(updateSkillset({ id: id, name: label }));
+      dispatch(updateSkill({ ...skill, name: label }));
     }
     setEditable(!editable);
   };
 
+  const toggleOrder = () => {
+    dispatch(updateSkill({ ...skill, isOrdered: !skill.isOrdered }));
+  };
+
   const buttonDeleteHandler = () => {
-    dispatch(deleteSkillset(id));
+    dispatch(deleteSkill(skill));
   };
 
   return (
@@ -45,6 +46,7 @@ export const SkillsetListItem: React.FC<SkillsetListItemProps> = ({
         label
       )}
       <Button onClick={toggleEditable}>{editable ? "s" : "e"}</Button>
+      <Button onClick={toggleOrder}>{skill.isOrdered ? "1" : "*"}</Button>
       <Button onClick={buttonDeleteHandler}>X</Button>
       <Button onClick={buttonAddHandler}>+</Button>
     </ButtonGroup>

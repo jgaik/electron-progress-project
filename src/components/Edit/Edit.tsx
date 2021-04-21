@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { updateSkillset, toggleShowEdit } from "../../store";
 import { ButtonType } from "../../types";
 import { FormPopUp } from "../common";
-import { SkillsetList } from "./SkillsetList";
+import { SkillList } from "./SkillList";
 
 export const Edit: React.FC = () => {
   const { skillset, isNew, showEdit } = useAppSelector((state) => state.edit);
@@ -62,7 +62,7 @@ export const Edit: React.FC = () => {
           </ButtonGroup>
         </FormGroup>
         <FormGroup>
-          <SkillsetList key="" skillset={skillset} />
+          <SkillList />
         </FormGroup>
       </Form>
     </FormPopUp>

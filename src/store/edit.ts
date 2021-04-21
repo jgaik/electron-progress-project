@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { createSkillset, extractParent, findSkillset, removeSkillset } from '../helpers';
-import { SkillsetType } from '../types'
+import { createIndexString, extractLevel, getLevel, getLevelLimits, shiftLevel, splitIndex } from '../helpers';
+import { SkillsetType, SkillType } from '../types'
 
 
 interface EditSliceType {
@@ -15,12 +15,16 @@ interface UpdateSkillsetType {
   id?: string;
   newId?: string;
   isOrdered?: boolean;
-  media?: string;
-  lastDate?: Date;
 }
 
 const initialState: EditSliceType = {
-  skillset: createSkillset(),
+  skillset: {
+    id: "",
+    name: "",
+    isOrdered: true,
+    skills: [],
+    levels: [0]
+  },
   showEdit: false,
   isNew: true,
   currentId: "",
@@ -31,39 +35,64 @@ const ediSlice = createSlice({
   initialState,
   reducers: {
     setSkillset(state, action:PayloadAction<SkillsetType>) {
-      state.skillset = action.payload;
+      state.skillset = { ...action.payload } ;
       state.isNew = false;
     },
     clearSkillset(state) {
-      state.skillset = initialState.skillset;
-      state.currentId = initialState.currentId;
+      state = { ...initialState };
       state.isNew = true;
     },
-    addSkillset(state, action:PayloadAction<SkillsetType>) {
-      const parentIndex= extractParent(action.payload.id);
-      if (parentIndex) {
-        findSkillset(state.skillset, parentIndex).skillsets.push(action.payload)
-      } else {
-        state.skillset.skillsets.push(action.payload)
+    addSkill(state, action:PayloadAction<SkillType>) {
+      const level = getLevel(action.payload.id);
+      let posIdx = -1;
+      if (state.skillset.levels.length < level + 1) {
+        state.skillset.levels = [ ...state.skillset.levels, 0];
       }
+      const levelLimits = getLevelLimits(state.skillset.levels, level);
+      const splitedIndex = splitIndex(action.payload.id);
+      if (splitedIndex.index > 0) {
+        posIdx = 1 + state.skillset.skills
+        .map( skill => skill.id )
+        .indexOf(shiftLevel(action.payload.id, -1), levelLimits.start);
+      }
+      if (state.skillset.levels[level] === 0) posIdx = levelLimits.start
+      let checkIndex:string = splitedIndex.parent || "";
+      while (checkIndex && posIdx < 0) {
+        let splitCheck = splitIndex(checkIndex);
+        const tempSkills = state.skillset.skills
+          // eslint-disable-next-line no-loop-func
+          .map( skill => extractLevel(skill.id, getLevel(checkIndex)) )
+        while (splitCheck.index >= 0) {
+          const tempIdx = tempSkills.indexOf(createIndexString(splitCheck), levelLimits.start);
+          if (tempIdx >= 0) {
+            posIdx = 1 + tempIdx;
+            break;
+          }
+          splitCheck.index --;
+        }
+        if (!splitCheck.parent) {
+          break;
+        } 
+        checkIndex = splitCheck.parent;
+      }
+      posIdx = posIdx < 0 ? levelLimits.start : posIdx;
+      let tempSkills = state.skillset.skills.slice();
+      tempSkills.splice(posIdx, 0, action.payload);
+      state.skillset.skills = tempSkills;
+      state.skillset.levels = state.skillset.levels.map( (v, i) => i === level ? v + 1 : v);
+      
+    },
+    updateSkill(state, action:PayloadAction<SkillType>) {
+      state.skillset.skills = state.skillset.skills.map( skill => skill.id === action.payload.id ? action.payload : skill);
     },
     updateSkillset(state, action:PayloadAction<UpdateSkillsetType>) {
-      let refSkillset = state.skillset;
-      if (action.payload.id) {
-        refSkillset = findSkillset(state.skillset, action.payload.id)
-        if (action.payload.newId) {
-          action.payload.id = action.payload.newId;
-          delete action.payload.newId;
-        }
-      }
-      if (typeof action.payload.isOrdered === 'boolean') refSkillset.isOrdered = action.payload.isOrdered;
-      refSkillset.name = action.payload.name || refSkillset.name;
-      refSkillset.id = action.payload.id || refSkillset.id;
-      refSkillset.media = action.payload.media || refSkillset.media;
-      refSkillset.lastDate = action.payload.lastDate || refSkillset.lastDate;
+      state.skillset.id = action.payload.newId || state.skillset.id;
+      state.skillset.name = action.payload.name || state.skillset.name;
+      state.skillset.isOrdered = typeof action.payload.isOrdered === 'boolean' 
+      ? action.payload.isOrdered : state.skillset.isOrdered;
     },
-    deleteSkillset(state, action:PayloadAction<string>) {
-      removeSkillset(state.skillset, action.payload)
+    deleteSkill(state, action:PayloadAction<SkillType>) {
+      // removeSkillset(state.skillset, action.payload)
     },
     toggleShowEdit(state) {
       state.showEdit = !state.showEdit;
@@ -75,5 +104,5 @@ const ediSlice = createSlice({
   extraReducers: {}
 })
 
-export const { setSkillset, clearSkillset, toggleShowEdit, updateSkillset, addSkillset, setCurrentId, deleteSkillset } = ediSlice.actions;
+export const { setSkillset, clearSkillset, toggleShowEdit, updateSkillset, addSkill, updateSkill, setCurrentId, deleteSkill } = ediSlice.actions;
 export default ediSlice.reducer
