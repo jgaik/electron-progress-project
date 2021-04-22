@@ -9,7 +9,6 @@ import {
 } from "../../helpers";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { addSkill, setCurrentId } from "../../store";
-import { SkillType } from "../../types";
 import { SkillListItem } from "./SkillListItem";
 
 interface SkillListProps {
@@ -37,13 +36,12 @@ export const SkillList: React.FC<SkillListProps> = ({ parent = null }) => {
           .isOrdered
       : state.edit.skillset.isOrdered;
   });
-  const elements = (skills: SkillType[]) =>
-    skills.map((skill) => (
-      <li key={skill.id}>
-        <SkillListItem skill={skill} />
-        <SkillList parent={skill.id} />
-      </li>
-    ));
+  const elements = skills.map((skill) => (
+    <li key={skill.id}>
+      <SkillListItem skill={skill} />
+      <SkillList parent={skill.id} />
+    </li>
+  ));
 
   const dispatch = useAppDispatch();
   const [skillNew, setSkillNew] = useState<string>("");
@@ -108,7 +106,7 @@ export const SkillList: React.FC<SkillListProps> = ({ parent = null }) => {
   return (
     <div>
       {skills.length > 0 &&
-        (isOrdered ? <ol>{elements(skills)}</ol> : <ul>{elements(skills)}</ul>)}
+        (isOrdered ? <ol>{elements}</ol> : <ul>{elements}</ul>)}
       {parent ? currentId === parent && addItemButtons : addItemButtons}
     </div>
   );

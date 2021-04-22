@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ButtonGroup, Button, Input } from "reactstrap";
+import { ButtonGroup, Button, Input, Label } from "reactstrap";
 import { useAppDispatch } from "../../hooks";
 import { setCurrentId, deleteSkill, updateSkill } from "../../store";
 import { SkillType } from "../../types";
@@ -43,7 +43,7 @@ export const SkillListItem: React.FC<SkillListItemProps> = ({ skill }) => {
       {editable ? (
         <Input value={label} onChange={inputEditChangeHandler} />
       ) : (
-        label
+        <Label>{label}</Label>
       )}
       <Button onClick={toggleEditable}>{editable ? "s" : "e"}</Button>
       <Button onClick={toggleOrder}>{skill.isOrdered ? "1" : "*"}</Button>

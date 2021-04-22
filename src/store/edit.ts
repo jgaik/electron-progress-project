@@ -12,14 +12,13 @@ interface EditSliceType {
 
 interface UpdateSkillsetType {
   name?: string,
-  id?: string;
-  newId?: string;
+  newId?: number;
   isOrdered?: boolean;
 }
 
 const initialState: EditSliceType = {
   skillset: {
-    id: "",
+    id: -1,
     name: "",
     isOrdered: true,
     skills: [],
@@ -41,6 +40,12 @@ const ediSlice = createSlice({
     clearSkillset(state) {
       state = { ...initialState };
       state.isNew = true;
+    },
+    updateEdit(state, action:PayloadAction<UpdateSkillsetType>) {
+      state.skillset.id = action.payload.newId || state.skillset.id;
+      state.skillset.name = action.payload.name || state.skillset.name;
+      state.skillset.isOrdered = typeof action.payload.isOrdered === 'boolean' 
+      ? action.payload.isOrdered : state.skillset.isOrdered;
     },
     addSkill(state, action:PayloadAction<SkillType>) {
       const level = getLevel(action.payload.id);
@@ -85,12 +90,6 @@ const ediSlice = createSlice({
     updateSkill(state, action:PayloadAction<SkillType>) {
       state.skillset.skills = state.skillset.skills.map( skill => skill.id === action.payload.id ? action.payload : skill);
     },
-    updateSkillset(state, action:PayloadAction<UpdateSkillsetType>) {
-      state.skillset.id = action.payload.newId || state.skillset.id;
-      state.skillset.name = action.payload.name || state.skillset.name;
-      state.skillset.isOrdered = typeof action.payload.isOrdered === 'boolean' 
-      ? action.payload.isOrdered : state.skillset.isOrdered;
-    },
     deleteSkill(state, action:PayloadAction<SkillType>) {
       // removeSkillset(state.skillset, action.payload)
     },
@@ -98,11 +97,11 @@ const ediSlice = createSlice({
       state.showEdit = !state.showEdit;
     },
     setCurrentId(state, action:PayloadAction<string>) {
-      state.currentId = action.payload
+      state.currentId = action.payload;
     }
   },
   extraReducers: {}
 })
 
-export const { setSkillset, clearSkillset, toggleShowEdit, updateSkillset, addSkill, updateSkill, setCurrentId, deleteSkill } = ediSlice.actions;
+export const { setSkillset, clearSkillset, toggleShowEdit, updateEdit, addSkill, updateSkill, setCurrentId, deleteSkill } = ediSlice.actions;
 export default ediSlice.reducer

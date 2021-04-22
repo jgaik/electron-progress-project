@@ -27,12 +27,15 @@ const skillsetsSlice = createSlice({
       state.showUpdae = action.payload;
     },
     addSkillset(state, action:PayloadAction<SkillsetType>) {
-      state.skillsets.push(action.payload);
+      state.skillsets = [ ...state.skillsets, action.payload ];
       state.count += 1;
+    },
+    updateSkillset(state, action:PayloadAction<SkillsetType>) {
+      state.skillsets = state.skillsets.map( (skillset, id) => action.payload.id === id ? action.payload : skillset);
     }
   },
   extraReducers: {}
 })
 
-export const { setShowAdd, setShowUpdate } = skillsetsSlice.actions;
+export const { setShowAdd, setShowUpdate, addSkillset, updateSkillset } = skillsetsSlice.actions;
 export default skillsetsSlice.reducer

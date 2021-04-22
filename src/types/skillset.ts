@@ -1,6 +1,6 @@
 export type SkillsetType = {
   name: string,
-  id: string,
+  id: number,
   isOrdered: boolean,
   skills: SkillType[],
   levels: number[]

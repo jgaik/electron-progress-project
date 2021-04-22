@@ -1,7 +1,12 @@
 import React from "react";
 import { Button, ButtonGroup, Form, FormGroup, Input } from "reactstrap";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { updateSkillset, toggleShowEdit } from "../../store";
+import {
+  updateEdit,
+  toggleShowEdit,
+  addSkillset,
+  updateSkillset,
+} from "../../store";
 import { ButtonType } from "../../types";
 import { FormPopUp } from "../common";
 import { SkillList } from "./SkillList";
@@ -15,18 +20,24 @@ export const Edit: React.FC = () => {
   };
 
   const buttonOrderHandler = (order: boolean) => {
-    dispatch(updateSkillset({ isOrdered: order }));
+    dispatch(updateEdit({ isOrdered: order }));
   };
 
   const popupTitle = isNew ? "Add new skillset" : "Edit skillset";
   const popupSubmit: ButtonType = isNew
-    ? { name: "Save" }
-    : { name: "Update & Save" };
+    ? {
+        name: "Save",
+        onClickHandle: () => dispatch(addSkillset(skillset)),
+      }
+    : {
+        name: "Update & Save",
+        onClickHandle: () => dispatch(updateSkillset(skillset)),
+      };
 
   const inputNameChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    dispatch(updateSkillset({ name: event.target.value }));
+    dispatch(updateEdit({ name: event.target.value }));
   };
 
   return (
