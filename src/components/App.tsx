@@ -1,15 +1,13 @@
 import React from "react";
-import { Button } from "reactstrap";
-import { useAppDispatch } from "../hooks";
-import { toggleShowEdit } from "../store";
 import "../styles/App.css";
+import { ControlBar, Dashboard } from ".";
 import { Edit } from "./Edit";
 
-export const App = () => {
-  const dispatch = useAppDispatch();
+export const App: React.FC = () => {
   return (
     <div>
-      <Button onClick={() => dispatch(toggleShowEdit())} />
+      <ControlBar />
+      <Dashboard />
       <Edit />
     </div>
   );
