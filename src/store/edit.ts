@@ -22,7 +22,8 @@ const initialState: EditSliceType = {
     name: "",
     isOrdered: true,
     skills: [],
-    levels: [0]
+    levels: [0],
+    progress: 0
   },
   showEdit: false,
   isNew: true,
@@ -48,6 +49,7 @@ const ediSlice = createSlice({
       ? action.payload.isOrdered : state.skillset.isOrdered;
     },
     addSkill(state, action:PayloadAction<SkillType>) {
+      action.payload.isDone = false;
       const level = getLevel(action.payload.id);
       let posIdx = -1;
       if (state.skillset.levels.length < level + 1) {

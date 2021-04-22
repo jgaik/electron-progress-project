@@ -4,7 +4,7 @@ export type SkillsetType = {
   isOrdered: boolean,
   skills: SkillType[],
   levels: number[]
-  progress?: number,
+  progress: number,
 }
 
 export type SkillType = {

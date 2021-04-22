@@ -6,3 +6,5 @@ export * from './UpdateSkill'
 
 //Direct exports
 export * from './App'
+export * from './ControlBar'
+export * from './Dashboard'

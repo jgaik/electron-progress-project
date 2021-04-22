@@ -31,6 +31,7 @@ const skillsetsSlice = createSlice({
       state.count += 1;
     },
     updateSkillset(state, action:PayloadAction<SkillsetType>) {
+      action.payload.progress = action.payload.skills.filter( skill => skill.isDone ).length / action.payload.skills.length;
       state.skillsets = state.skillsets.map( (skillset, id) => action.payload.id === id ? action.payload : skillset);
     }
   },
