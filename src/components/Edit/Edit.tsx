@@ -1,5 +1,14 @@
+import { FormatListBulleted, FormatListNumbered } from "@material-ui/icons";
 import React from "react";
-import { Button, ButtonGroup, Form, FormGroup, Input } from "reactstrap";
+import {
+  Button,
+  ButtonGroup,
+  Col,
+  Form,
+  FormGroup,
+  Input,
+  Row,
+} from "reactstrap";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
   updateEdit,
@@ -48,33 +57,37 @@ export const Edit: React.FC = () => {
       buttonSubmit={popupSubmit}
     >
       <Form>
-        <FormGroup>
-          <Input
-            placeholder="Skillset name"
-            type="text"
-            value={skillset.name}
-            onChange={inputNameChangeHandler}
-          />
-        </FormGroup>
-        <FormGroup>
-          <ButtonGroup>
-            <Button
-              onClick={() => buttonOrderHandler(true)}
-              active={skillset.isOrdered}
-            >
-              Ordered
-            </Button>
-            <Button
-              onClick={() => buttonOrderHandler(false)}
-              active={!skillset.isOrdered}
-            >
-              Unordered
-            </Button>
-          </ButtonGroup>
-        </FormGroup>
-        <FormGroup>
-          <SkillList />
-        </FormGroup>
+        <Row form>
+          <Col>
+            <FormGroup>
+              <Input
+                placeholder="Skillset name"
+                type="text"
+                value={skillset.name}
+                onChange={inputNameChangeHandler}
+              />
+            </FormGroup>
+          </Col>
+          <Col>
+            <FormGroup>
+              <ButtonGroup>
+                <Button
+                  onClick={() => buttonOrderHandler(true)}
+                  active={skillset.isOrdered}
+                >
+                  <FormatListNumbered />
+                </Button>
+                <Button
+                  onClick={() => buttonOrderHandler(false)}
+                  active={!skillset.isOrdered}
+                >
+                  <FormatListBulleted />
+                </Button>
+              </ButtonGroup>
+            </FormGroup>
+          </Col>
+        </Row>
+        <SkillList />
       </Form>
     </FormPopUp>
   );

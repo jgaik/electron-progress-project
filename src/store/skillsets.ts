@@ -27,12 +27,15 @@ const skillsetsSlice = createSlice({
       state.showUpdae = action.payload;
     },
     addSkillset(state, action:PayloadAction<SkillsetType>) {
-      state.skillsets = [ ...state.skillsets, action.payload ];
+      const newSkillset = { ...action.payload,  id: state.count };
+      state.skillsets = [ ...state.skillsets, newSkillset ];
       state.count += 1;
     },
     updateSkillset(state, action:PayloadAction<SkillsetType>) {
-      action.payload.progress = action.payload.skills.filter( skill => skill.isDone ).length / action.payload.skills.length;
-      state.skillsets = state.skillsets.map( (skillset, id) => action.payload.id === id ? action.payload : skillset);
+      const newSkillset = { 
+        ...action.payload,  
+        progress: action.payload.skills.filter( skill => skill.isDone ).length / action.payload.skills.length };
+      state.skillsets = state.skillsets.map( (skillset, id) => newSkillset.id === id ? newSkillset : skillset);
     }
   },
   extraReducers: {}

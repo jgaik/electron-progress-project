@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { createIndexString, extractLevel, getLevel, getLevelLimits, shiftLevel, splitIndex } from '../helpers';
 import { SkillsetType, SkillType } from '../types'
 
@@ -34,14 +34,13 @@ const ediSlice = createSlice({
   name: 'edit',
   initialState,
   reducers: {
-    setSkillset(state, action:PayloadAction<SkillsetType>) {
-      state.skillset = { ...action.payload } ;
-      state.isNew = false;
-    },
-    clearSkillset(state) {
-      state = { ...initialState };
-      state.isNew = true;
-    },
+    // setSkillset(state, action:PayloadAction<SkillsetType>) {
+    //   state.skillset = { ...action.payload } ;
+    //   state.isNew = false;
+    // },
+    // clearSkillset(state) {
+    //   state = initialState;
+    // },
     updateEdit(state, action:PayloadAction<UpdateSkillsetType>) {
       state.skillset.id = action.payload.newId || state.skillset.id;
       state.skillset.name = action.payload.name || state.skillset.name;
@@ -95,7 +94,9 @@ const ediSlice = createSlice({
     deleteSkill(state, action:PayloadAction<SkillType>) {
       // removeSkillset(state.skillset, action.payload)
     },
-    toggleShowEdit(state) {
+    toggleShowEdit(state, action:PayloadAction<SkillsetType|undefined>) {
+      state.skillset = action.payload || initialState.skillset;
+      state.isNew = !action.payload;
       state.showEdit = !state.showEdit;
     },
     setCurrentId(state, action:PayloadAction<string>) {
@@ -105,5 +106,5 @@ const ediSlice = createSlice({
   extraReducers: {}
 })
 
-export const { setSkillset, clearSkillset, toggleShowEdit, updateEdit, addSkill, updateSkill, setCurrentId, deleteSkill } = ediSlice.actions;
+export const { toggleShowEdit, updateEdit, addSkill, updateSkill, setCurrentId, deleteSkill } = ediSlice.actions;
 export default ediSlice.reducer

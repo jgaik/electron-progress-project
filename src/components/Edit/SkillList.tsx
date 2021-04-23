@@ -1,3 +1,4 @@
+import { Add, Close } from "@material-ui/icons";
 import React, { useState } from "react";
 import { Button, Input, InputGroup, InputGroupAddon } from "reactstrap";
 import {
@@ -13,9 +14,13 @@ import { SkillListItem } from "./SkillListItem";
 
 interface SkillListProps {
   parent?: string;
+  expand?: boolean;
 }
 
-export const SkillList: React.FC<SkillListProps> = ({ parent = null }) => {
+export const SkillList: React.FC<SkillListProps> = ({
+  parent = null,
+  expand = true,
+}) => {
   const currentId = useAppSelector((state) => state.edit.currentId);
   const levels = useAppSelector((state) => state.edit.skillset.levels);
 
@@ -39,7 +44,7 @@ export const SkillList: React.FC<SkillListProps> = ({ parent = null }) => {
   const elements = skills.map((skill) => (
     <li key={skill.id}>
       <SkillListItem skill={skill} />
-      <SkillList parent={skill.id} />
+      <SkillList parent={skill.id} expand={skill.expandChildren} />
     </li>
   ));
 
@@ -54,6 +59,7 @@ export const SkillList: React.FC<SkillListProps> = ({ parent = null }) => {
             id: createIndexString({ index: 0, parent }),
             name: skillNew,
             isOrdered,
+            expandChildren: false,
           })
         );
       } else {
@@ -63,6 +69,7 @@ export const SkillList: React.FC<SkillListProps> = ({ parent = null }) => {
             id: shiftLevel(otherSkill.id, 1),
             name: skillNew,
             isOrdered,
+            expandChildren: false,
           })
         );
       }
@@ -88,7 +95,9 @@ export const SkillList: React.FC<SkillListProps> = ({ parent = null }) => {
   const addItemButtons = (
     <InputGroup>
       <InputGroupAddon addonType="prepend">
-        <Button onClick={buttonAddHandler}>+</Button>
+        <Button onClick={buttonAddHandler}>
+          <Add />
+        </Button>
       </InputGroupAddon>
       <Input
         placeholder="Skill name"
@@ -97,7 +106,9 @@ export const SkillList: React.FC<SkillListProps> = ({ parent = null }) => {
       />
       {parent && (
         <InputGroupAddon addonType="append">
-          <Button onClick={buttonCloseHandler}>x</Button>
+          <Button onClick={buttonCloseHandler}>
+            <Close />
+          </Button>
         </InputGroupAddon>
       )}
     </InputGroup>
@@ -106,6 +117,7 @@ export const SkillList: React.FC<SkillListProps> = ({ parent = null }) => {
   return (
     <div>
       {skills.length > 0 &&
+        expand &&
         (isOrdered ? <ol>{elements}</ol> : <ul>{elements}</ul>)}
       {parent ? currentId === parent && addItemButtons : addItemButtons}
     </div>

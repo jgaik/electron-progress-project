@@ -38,10 +38,14 @@ export const PopUp: React.FC<PopUpProps> = ({
       {isFooter && (
         <ModalFooter>
           {buttonPrimary && (
-            <Button onClick={primaryToggle}>{buttonPrimary.name}</Button>
+            <Button color="primary" onClick={primaryToggle}>
+              {buttonPrimary.name}
+            </Button>
           )}
           {buttonSecondary && (
-            <Button onClick={secondaryToggle}>{buttonSecondary.name}</Button>
+            <Button color="secondary" onClick={secondaryToggle}>
+              {buttonSecondary.name}
+            </Button>
           )}
         </ModalFooter>
       )}

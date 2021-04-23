@@ -1,25 +1,41 @@
 import React, { useState } from "react";
 import { CircularProgressbar } from "react-circular-progressbar";
-import { Button, CardGroup, Collapse } from "reactstrap";
+import { Button, ButtonGroup, CardGroup, Collapse } from "reactstrap";
 import { SkillsetType } from "../../types";
 import { Skill } from ".";
+import { useAppDispatch } from "../../hooks";
+import { toggleShowEdit } from "../../store";
+import { MoreVert } from "@material-ui/icons";
+
+import "react-circular-progressbar/dist/styles.css";
 
 export interface SkillsetProps {
   skillset: SkillsetType;
 }
 
 export const Skillset: React.FC<SkillsetProps> = ({ skillset }) => {
+  const dispatch = useAppDispatch();
   const [showSkills, setShowSkills] = useState<boolean>(false);
-  const progressText = `${Math.round(skillset.progress * 100)} %`;
+  const progress = Math.round(skillset.progress * 100);
+  const progressText = `${progress} %`;
 
-  const handleButtonClick = () => setShowSkills(!showSkills);
+  const buttonNameHandler = () => setShowSkills(!showSkills);
+  const buttonEditHandler = () => {
+    dispatch(toggleShowEdit(skillset));
+  };
 
   return (
     <div className="skillset">
       <div className="skillset-bar">
-        <Button onClick={handleButtonClick}> {skillset.name} </Button>
-        <CircularProgressbar value={skillset.progress} text={progressText} />
-        {showSkills && <Button>Edit skillset</Button>}
+        <ButtonGroup>
+          <Button onClick={buttonNameHandler}> {skillset.name} </Button>
+          <CircularProgressbar value={progress} text={progressText} />
+          {showSkills && (
+            <Button onClick={buttonEditHandler}>
+              <MoreVert />
+            </Button>
+          )}
+        </ButtonGroup>
       </div>
       <Collapse isOpen={showSkills}>
         <CardGroup className="skills">

@@ -1,8 +1,16 @@
 import React, { useState } from "react";
-import { ButtonGroup, Button, Input, Label } from "reactstrap";
+import { ButtonGroup, Button, Input } from "reactstrap";
 import { useAppDispatch } from "../../hooks";
 import { setCurrentId, deleteSkill, updateSkill } from "../../store";
 import { SkillType } from "../../types";
+import {
+  Add,
+  Delete,
+  Edit,
+  FormatListBulleted,
+  FormatListNumbered,
+  Save,
+} from "@material-ui/icons";
 
 interface SkillListItemProps {
   skill: SkillType;
@@ -10,24 +18,28 @@ interface SkillListItemProps {
 
 export const SkillListItem: React.FC<SkillListItemProps> = ({ skill }) => {
   const dispatch = useAppDispatch();
-  const [editable, setEditable] = useState<boolean>(false);
-  const [label, setLabel] = useState<string>(skill.name);
+  const [skillState, setSkillState] = useState({
+    label: skill.name,
+    editMode: false,
+    showControls: false,
+  });
 
   const buttonAddHandler = () => {
+    dispatch(updateSkill({ ...skill, expandChildren: true }));
     dispatch(setCurrentId(skill.id));
   };
 
   const inputEditChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setLabel(event.target.value);
+    setSkillState({ ...skillState, label: event.target.value });
   };
 
   const toggleEditable = () => {
-    if (editable) {
-      dispatch(updateSkill({ ...skill, name: label }));
+    if (skillState.editMode) {
+      dispatch(updateSkill({ ...skill, name: skillState.label }));
     }
-    setEditable(!editable);
+    setSkillState({ ...skillState, editMode: !skillState.editMode });
   };
 
   const toggleOrder = () => {
@@ -38,17 +50,54 @@ export const SkillListItem: React.FC<SkillListItemProps> = ({ skill }) => {
     dispatch(deleteSkill(skill));
   };
 
-  return (
-    <ButtonGroup>
-      {editable ? (
-        <Input value={label} onChange={inputEditChangeHandler} />
-      ) : (
-        <Label>{label}</Label>
+  const buttonLabelEnterHandler = () => {
+    setSkillState({ ...skillState, showControls: true });
+  };
+
+  const buttonLabelLeaveHandler = () => {
+    setSkillState({ ...skillState, showControls: false });
+  };
+
+  const buttonLabelHandler = () => {
+    if (skill.expandChildren) {
+      dispatch(setCurrentId(""));
+    }
+    dispatch(updateSkill({ ...skill, expandChildren: !skill.expandChildren }));
+  };
+
+  const labelButton = skillState.editMode ? (
+    <Input value={skillState.label} onChange={inputEditChangeHandler} />
+  ) : (
+    <Button onClick={buttonLabelHandler}>{skillState.label}</Button>
+  );
+
+  const controlButtons = (
+    <>
+      <Button onClick={toggleEditable}>
+        {skillState.editMode ? <Save /> : <Edit />}
+      </Button>
+      {skill.expandChildren && (
+        <Button onClick={toggleOrder}>
+          {skill.isOrdered ? <FormatListNumbered /> : <FormatListBulleted />}
+        </Button>
       )}
-      <Button onClick={toggleEditable}>{editable ? "s" : "e"}</Button>
-      <Button onClick={toggleOrder}>{skill.isOrdered ? "1" : "*"}</Button>
-      <Button onClick={buttonDeleteHandler}>X</Button>
-      <Button onClick={buttonAddHandler}>+</Button>
+
+      <Button onClick={buttonDeleteHandler}>
+        <Delete />
+      </Button>
+      <Button onClick={buttonAddHandler}>
+        <Add />
+      </Button>
+    </>
+  );
+
+  return (
+    <ButtonGroup
+      onMouseEnter={buttonLabelEnterHandler}
+      onMouseLeave={buttonLabelLeaveHandler}
+    >
+      {labelButton}
+      {skillState.showControls && controlButtons}
     </ButtonGroup>
   );
 };

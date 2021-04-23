@@ -11,6 +11,7 @@ export type SkillType = {
   id: string,
   name: string,
   isOrdered: boolean,
+  expandChildren: boolean,
   media?: string,
   lastDate?: Date,
   isDone?: boolean
